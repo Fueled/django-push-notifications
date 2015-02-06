@@ -1,10 +1,14 @@
 #!/usr/bin/env python
-import os, sys
-os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+from __future__ import absolute_import
 
-import django
-if hasattr(django, 'setup'):
-    django.setup()
+import os
+import sys
 
-from django.core.management import call_command
-call_command(*sys.argv[1:])
+if __name__ == "__main__":
+
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.settings")
+    os.environ.setdefault("DJANGO_CONFIGURATION", "Testing")
+
+    from configurations.management import execute_from_command_line
+
+    execute_from_command_line(sys.argv)
