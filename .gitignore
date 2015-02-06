@@ -4,3 +4,5 @@ dist
 build
 .tox
 .cache
+
+.DS_Store
