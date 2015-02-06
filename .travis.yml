@@ -1,0 +1,22 @@
+language: python
+sudo: false
+python:
+- '2.7'
+
+before_script:
+  - flake8 ./
+
+cache:
+  directories:
+  - $HOME/.pip-cache/
+
+install:
+  - pip install -r requirements/development.txt --allow-all-external --download-cache $HOME/.pip-cache
+
+script:
+- ./manage.py test
+
+notifications:
+  email:
+    on_success: change  # [always|never|change]
+    on_failure: always  # [always|never|change]
