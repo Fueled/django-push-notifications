@@ -1,3 +1,4 @@
+# General
 *.pyc
 dist
 *.egg-info
@@ -5,4 +6,9 @@ build
 .tox
 .cache
 
+# Mac
 .DS_Store
+
+
+# Environment
+env/
