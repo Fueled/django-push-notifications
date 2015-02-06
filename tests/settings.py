@@ -5,7 +5,8 @@ class Testing(Configuration):
     SECRET_KEY = 'abc'
 
     INSTALLED_APPS = (
-        "push_notifications",
+        'push_notifications',
+        'tests',
     )
 
     DATABASES = {
@@ -14,3 +15,5 @@ class Testing(Configuration):
             'NAME': 'testing',
         }
     }
+
+    AUTH_USER_MODEL = 'tests.TestUser'
