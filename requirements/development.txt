@@ -1,0 +1,9 @@
+-r common.txt
+
+# Testing
+# -------------------------------------
+flake8==2.3.0
+
+# Configuration
+# -------------------------------------
+django-configurations==0.8
