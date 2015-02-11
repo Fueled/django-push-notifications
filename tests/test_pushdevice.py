@@ -8,7 +8,7 @@ from django.test import TestCase
 from .factories import PushDeviceFactory
 
 
-class ModelTest(TestCase):
+class PushDeviceTest(TestCase):
     def test_required_variables(self):
         """
         Test if the model has the required properties
