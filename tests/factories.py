@@ -2,6 +2,7 @@
 
 # Standard Library
 import threading
+import random
 
 # Third Party Stuff
 import factory
@@ -40,3 +41,13 @@ class PushDeviceFactory(Factory):
 
     token = fuzzy.FuzzyText(chars='01234567890abcdef-', length=64)
     user = factory.SubFactory('tests.factories.TestUserFactory')
+
+
+class NotificationSettingFactory(Factory):
+    class Meta:
+        model = 'push_notifications.NotificationSetting'
+        strategy = factory.CREATE_STRATEGY
+
+    name = factory.Sequence(lambda n: "Name {0}".format(n + 1))
+    device = factory.SubFactory('tests.factories.PushDeviceFactory')
+    send = random.choice([True, False])

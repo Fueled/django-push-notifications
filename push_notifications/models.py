@@ -13,3 +13,29 @@ class PushDevice(models.Model):
 
     def __unicode__(self):
         return u"Device %s" % self.token
+
+
+class NotificationSetting(models.Model):
+    device = models.ForeignKey(PushDevice, related_name='notification_settings')
+    name = models.CharField(max_length=255, verbose_name=_("Notification name"))
+    send = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('device', 'name')
+
+    def __unicode__(self):
+        return "{0} - {1}".format(self.device, self.type)
+
+    @classmethod
+    def can_send(cls, device, notice_type):
+        """
+        Check if the given device has the given `notice_type` enabled
+        """
+        try:
+            notification_setting = cls.objects.get(device=device,
+                                                   name=notice_type)
+        except cls.DoesNotExist:
+            notification_setting = cls.objects.create(device=device,
+                                                      name=notice_type)
+
+        return notification_setting.send
