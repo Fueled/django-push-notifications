@@ -10,7 +10,7 @@ __TODO__
 ## Usage
 
 ### Register a device
-To register a new device you can use the `register_push_device` method in `services`:
+To register a new device you can use the `register_push_device` method in `utils`:
 ```python
 from push_notifications.services from register_push_device
 
@@ -35,23 +35,10 @@ Or adding multiple permissions
 device.add_permissions(['likes', 'comments'])
 ```
 
-You can also use the `add_notification_permissions` method in `services`:
-```python
-from push_notifications.services import add_notification_permission 
-
-add_notification_permissions(device, ['likes', 'comments'])
-```
-
-Or
-```python
-add_notification_permission(device, 'likes')
-add_notification_permission(device, 'comments')
-```
-
 ### Remove permissions
 To remove a notification permission you can use `remove_permission` method on the `device` object:
 ```python
-device.remove_permission('likes')
+device.remove_permissions('likes')
 ```
 
 Or removing multiple permissions
@@ -60,7 +47,7 @@ device.remove_permissions(['likes', 'comments'])
 ```
 
 ### Send a notification
-To send a notification to a certain permission group you can call `send_push_notification` in `services`:
+To send a notification to a certain permission group you can call `send_push_notification` in `utils`:
 ```python
 from push_notifications import send_push_notification
 from datetime import timedelta
@@ -75,12 +62,40 @@ send_push_notification('likes', 'This is the message', sound="annoyingSound.mp3"
 ```
 
 #### Description
-`send_push_notification(notify_type, message, **kwargs)
+`send_push_notification(notify_type, message, **kwargs)`
 
 **kwargs**
 - `sound`: The sound that has to be played when sending the notification
 - `bade_number`: The badge_number that has to be displayed __(iOS Only)__
 - `info`: Extra payload that comes along the notification
 - `expiry`: The expiry of the notification __Accepts timedelta and datetime object__
+
+### Send a notification to one device
+To send a notification to a specific device you can use the `send_push_notification` on the `device` object
+
+```python
+device.send_push_notification('likes', 'This is the message', sound="annoyingSound.mp3",
+                                                              badge_number=1
+                                                              info={
+                                                                "extra": "payload",
+                                                                "in": "notification"
+                                                              },
+                                                              expiry=timedelta(days=30))
+```
+It accepts the same parameters as the global `send_push_notification` in `utils`.
+
+### Send a notification to one user
+To send a notification to a user and all its devices you can use the `send_push_notification` on the `push_devices` name in your user object:
+
+```python
+user.push_devices.send_push_notification('likes', 'This is the message',
+                                         sound="annoyingSound.mp3",
+                                         badge_number=1
+                                         info={
+                                           "extra": "payload",
+                                           "in": "notification"
+                                         },
+                                         expiry=timedelta(days=30))
+```
 
 
