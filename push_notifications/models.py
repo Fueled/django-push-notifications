@@ -1,15 +1,74 @@
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.query import QuerySet
+
+
+class PushDeviceManager(models.Manager):
+
+    # This enables us to have add_permissions on the
+    # RelatedManager
+    use_for_related_fields = True
+
+    def add_permissions(self, notice_types):
+            self.model.batch_change_permissions(
+                notice_types, self.all(), send=True)
+
+    def remove_permissions(self, notice_types):
+        self.model.batch_change_permissions(
+            notice_types, self.all(), send=False)
+
+    def get_queryset(self):
+        return self.model.QuerySet(self.model)
 
 
 class PushDevice(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             verbose_name=_("Owner of this device"))
+                             verbose_name=_("Owner of this device"),
+                             related_name="push_devices")
     token = models.CharField(_("Device token string"),
                              max_length=255, db_index=True)
     device_type = models.CharField(_("Type of device"),
                                    max_length=255, blank=True, null=True)
+
+    objects = PushDeviceManager()
+
+    def add_permissions(self, notice_types):
+        """ Adds a permission to the push device """
+        PushDevice.change_permissions(notice_types, self, send=True)
+
+    def remove_permissions(self, notice_types):
+        """ Removes a permission to the push device """
+        PushDevice.change_permissions(notice_types, self, send=False)
+
+    @classmethod
+    def change_permissions(cls, notice_types, device, send=True):
+        notice_types = (notice_types
+                        if isinstance(notice_types, list) else [notice_types])
+
+        for notice_type in notice_types:
+            try:
+                notification_setting = NotificationSetting.objects.get(
+                    device=device, name=notice_type)
+                notification_setting.send = send
+                notification_setting.save()
+            except NotificationSetting.DoesNotExist:
+                notification_setting = NotificationSetting.objects.create(
+                    device=device, name=notice_type, send=send)
+
+    @classmethod
+    def batch_change_permissions(cls, notice_types, devices, send=True):
+        for device in devices:
+            cls.change_permissions(notice_types, device, send)
+
+    class QuerySet(QuerySet):
+        def add_permissions(self, notice_types):
+            self.model.batch_change_permissions(
+                notice_types, self.all(), send=True)
+
+        def remove_permissions(self, notice_types):
+            self.model.batch_change_permissions(
+                notice_types, self.all(), send=False)
 
     def __unicode__(self):
         return u"Device %s" % self.token

@@ -1,4 +1,4 @@
-from configurations import Configuration
+from configurations import Configuration, values
 
 
 class Testing(Configuration):
@@ -17,3 +17,5 @@ class Testing(Configuration):
     }
 
     AUTH_USER_MODEL = 'tests.TestUser'
+
+    DEBUG = values.BooleanValue(True)
