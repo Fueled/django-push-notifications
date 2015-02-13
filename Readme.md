@@ -12,8 +12,7 @@ __TODO__
 ### Register a device
 To register a new device you can use the `register_push_device` method in `utils`:
 ```python
-from push_notifications.services from register_push_device
-
+from push_notifications.utils from register_push_device
 
 token = "<The device token>"
 register_push_device(user, token)
@@ -35,6 +34,11 @@ Or adding multiple permissions
 device.add_permissions(['likes', 'comments'])
 ```
 
+Add all the permission for the devices that the user owns.
+```python
+user.push_devices.add_permissions(['likes', 'comments'])
+```
+
 ### Remove permissions
 To remove a notification permission you can use `remove_permission` method on the `device` object:
 ```python
@@ -44,6 +48,11 @@ device.remove_permissions('likes')
 Or removing multiple permissions
 ```python
 device.remove_permissions(['likes', 'comments'])
+```
+
+Remove all the permission for the devices that the user owns.
+```python
+user.push_devices.remove_permissions(['likes', 'comments'])
 ```
 
 ### Send a notification
