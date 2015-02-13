@@ -4,12 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.query import QuerySet
 
 
-class PushDeviceManager(models.Manager):
-
-    # This enables us to have add_permissions on the
-    # RelatedManager
-    use_for_related_fields = True
-
+class PushDeviceMethods(object):
     def add_permissions(self, notice_types):
             self.model.batch_change_permissions(
                 notice_types, self.all(), send=True)
@@ -17,6 +12,16 @@ class PushDeviceManager(models.Manager):
     def remove_permissions(self, notice_types):
         self.model.batch_change_permissions(
             notice_types, self.all(), send=False)
+
+    def register_push_device(self, user, token, notify_types=None):
+        return self.model.register_push_device(user, token, notify_types)
+
+
+class PushDeviceManager(PushDeviceMethods, models.Manager):
+
+    # This enables us to have add_permissions on the
+    # RelatedManager
+    use_for_related_fields = True
 
     def get_queryset(self):
         return self.model.QuerySet(self.model)
@@ -42,6 +47,14 @@ class PushDevice(models.Model):
         PushDevice.change_permissions(notice_types, self, send=False)
 
     @classmethod
+    def register_push_device(cls, user, token, notice_types=None):
+        device, _ = cls.objects.get_or_create(token=token,
+                                              user=user)
+        if notice_types:
+            cls.change_permissions(notice_types, device)
+        return device
+
+    @classmethod
     def change_permissions(cls, notice_types, device, send=True):
         notice_types = (notice_types
                         if isinstance(notice_types, list) else [notice_types])
@@ -61,14 +74,8 @@ class PushDevice(models.Model):
         for device in devices:
             cls.change_permissions(notice_types, device, send)
 
-    class QuerySet(QuerySet):
-        def add_permissions(self, notice_types):
-            self.model.batch_change_permissions(
-                notice_types, self.all(), send=True)
-
-        def remove_permissions(self, notice_types):
-            self.model.batch_change_permissions(
-                notice_types, self.all(), send=False)
+    class QuerySet(PushDeviceMethods, QuerySet):
+        pass
 
     def __unicode__(self):
         return u"Device %s" % self.token
