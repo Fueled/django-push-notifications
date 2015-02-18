@@ -19,3 +19,8 @@ class Testing(Configuration):
     AUTH_USER_MODEL = 'tests.TestUser'
 
     DEBUG = values.BooleanValue(True)
+
+    DJANGO_PUSH_NOTIFICATIONS = {
+        'SERVICE': 'push_notifications.services.zeropush.ZeroPushService',
+        'AUTH_TOKEN': '123123123'
+    }
