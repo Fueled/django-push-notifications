@@ -8,3 +8,7 @@ factory_boy==2.4.1
 # Configuration
 # -------------------------------------
 django-configurations==0.8
+
+# Mocking
+# -------------------------------------
+responses==0.3.0
