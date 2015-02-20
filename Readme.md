@@ -5,7 +5,27 @@ This package makes it easy to support Push notifications. It works together with
 You can easily add permissions to push devices by chaining those devices to a notification setting. For registering a new push device you can add custom permissions.
 
 ## Configuration
-__TODO__
+
+First you have to add `push_notifications` to your installed apps:
+```python
+  INSTALLED_APPS = (
+    ...
+    'push_notifications',
+  )
+```
+
+To setup the package you have to add a `DJANGO_PUSH_NOTIFICATIONS` into your settings:
+```python
+def Settings(Configuration):
+  # ...
+  DJANGO_PUSH_NOTIFICATIONS = {
+      'SERVICE': 'push_notifications.services.zeropush.ZeroPushService',
+      'AUTH_TOKEN': '123123123'
+  }
+```
+The `SERVICE` Key can be set to the type of service you use. In this example we use the `ZeroPushService`. With the `ZeroPush` Service we are required to add a `AUTH_TOKEN` to the `Configuration`.
+
+__Note__: Right now, only `ZeroPush` is available. More services will be available soon.
 
 ## Usage
 
