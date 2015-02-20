@@ -3,6 +3,8 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query import QuerySet
 
+from .services import get_service
+
 
 class PushDeviceMethods(object):
     def add_permissions(self, notice_types):
@@ -15,6 +17,10 @@ class PushDeviceMethods(object):
 
     def register_push_device(self, user, token, notify_types=None):
         return self.model.register_push_device(user, token, notify_types)
+
+    def send_push_notification(self, message, **kwargs):
+        return self.model.send_push_notification(self.all(),
+                                                 message, **kwargs)
 
 
 class PushDeviceManager(PushDeviceMethods, models.Manager):
@@ -73,6 +79,10 @@ class PushDevice(models.Model):
     def batch_change_permissions(cls, notice_types, devices, send=True):
         for device in devices:
             cls.change_permissions(notice_types, device, send)
+
+    @classmethod
+    def send_push_notification(cls, devices, message, **kwargs):
+        return get_service().send_push_notification(devices, message, **kwargs)
 
     class QuerySet(PushDeviceMethods, QuerySet):
         pass
