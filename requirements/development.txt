@@ -12,3 +12,7 @@ django-configurations==0.8
 # Mocking
 # -------------------------------------
 responses==0.3.0
+
+# Querysting parser
+# -------------------------------------
+querystring-parser==1.2.0
