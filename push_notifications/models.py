@@ -22,6 +22,9 @@ class PushDeviceMethods(object):
         return self.model.send_push_notification(self.all(),
                                                  message, **kwargs)
 
+    def unregister_push_device(self, user, token):
+        return self.model.unregister_push_device(user, token)
+
 
 class PushDeviceManager(PushDeviceMethods, models.Manager):
 
@@ -59,6 +62,11 @@ class PushDevice(models.Model):
         if notice_types:
             cls.change_permissions(notice_types, device)
         return device
+
+    @classmethod
+    def unregister_push_device(cls, user, token):
+        deleted = user.push_devices.filter(token=token).delete()
+        return deleted > 0
 
     @classmethod
     def change_permissions(cls, notice_types, device, send=True):
