@@ -1,6 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 import requests
-import json
+from datetime import timedelta, datetime
 
 from .base import BaseService
 
@@ -21,16 +21,24 @@ class ZeroPushService(BaseService):
                                payload=None, expiry=None):
         params = {
             "auth_token": self.auth_token,
-            "device_tokens[]": [device.token for device in devices]
+            "device_tokens[]": [device.token for device in devices],
+            "expiry": expiry,
+            "sound": sound,
+            "info": payload
         }
-        if message is not None:
-            params.update({"alert": message})
-        if sound is not None:
-            params.update({"sound": sound})
-        if badge_number is not None:
-            params.update({"badge_number": badge_number})
-        if payload is not None:
-            params.update({"info": json.dumps(payload)})
+
+        for key in params.keys():
+            if not params[key]:
+                del params[key]
+
+        expiry_time = timedelta(days=30).seconds
+
+        if isinstance(expiry, datetime):
+            expiry_time = expiry.second
+        elif isinstance(expiry, timedelta):
+            expiry_time = expiry.seconds
+
+        params['expiry'] = expiry_time
 
         response = requests.post(ZEROPUSH_REQUEST_URL, params)
 

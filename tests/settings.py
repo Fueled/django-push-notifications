@@ -7,6 +7,7 @@ class Testing(Configuration):
     INSTALLED_APPS = (
         'push_notifications',
         'tests',
+        'querystring_parser',
     )
 
     DATABASES = {
