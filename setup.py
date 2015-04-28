@@ -20,13 +20,18 @@ if sys.argv[-1] == 'publish':
     print("  git push --tags")
     sys.exit()
 
-readme = open('Readme.md').read()
-
 setup(
     name='django-push-notifications-manager',
     version=version,
-    description="""{{ cookiecutter.project_short_description }}""",
-    long_description=readme,
+    description="A library for easily sending and configuring push"
+                " notifications with ZeroPush and Urban Airship "
+                "http://fueled.github.io/django-push-notifications",
+    long_description="A library for easily sending and configuring push"
+                     " notifications with ZeroPush and Urban Airship "
+                     "Installation can be found on "
+                     "http://fueled.github.io/django-push-notifications."
+                     "Want to contribute? Go to: "
+                     "https://github.com/Fueled/django-push-notifications",
     author='Paul Oostenrijk',
     author_email='paul@glemma.nl',
     url='https://github.com/Fueled/django-push-notifications',
