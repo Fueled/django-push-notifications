@@ -4,6 +4,13 @@ This package makes it easy to support Push notifications. It works together with
 
 You can easily add permissions to push devices by chaining those devices to a notification setting. For registering a new push device you can add custom permissions.
 
+## Installation
+
+To install the package on your machine you can run the PIP install:
+```
+pip install django-push-notifications-manager
+```
+
 ## Configuration
 
 First you have to add `push_notifications` to your installed apps:

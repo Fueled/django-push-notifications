@@ -11,10 +11,10 @@ cache:
   - $HOME/.pip-cache/
 
 install:
-  - pip install -r requirements/development.txt --allow-all-external --download-cache $HOME/.pip-cache
+  - pip install -r requirements-test.txt --allow-all-external --download-cache $HOME/.pip-cache
 
 script:
-- ./manage.py test
+- python runtests.py
 
 notifications:
   email:
