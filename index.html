@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Django-push-notifications by Fueled</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Django-push-notifications</h1>
+      <h2 class="project-tagline">A library for easily sending and configuring push notifications with ZeroPush and Urban Airship</h2>
+      <a href="https://github.com/Fueled/django-push-notifications" class="btn">View on GitHub</a>
+      <a href="https://github.com/Fueled/django-push-notifications/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Fueled/django-push-notifications/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="django-push-notifications" class="anchor" href="#django-push-notifications" aria-hidden="true"><span class="octicon octicon-link"></span></a>Django Push Notifications</h1>
+
+<p>This package makes it easy to support Push notifications. It works together with third party services such as <code>ZeroPush</code>.</p>
+
+<p>You can easily add permissions to push devices by chaining those devices to a notification setting. For registering a new push device you can add custom permissions.</p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>First you have to add <code>push_notifications</code> to your installed apps:</p>
+
+<div class="highlight highlight-python"><pre>  INSTALLED_APPS <span class="pl-k">=</span> (
+    ...
+    <span class="pl-s"><span class="pl-pds">'</span>push_notifications<span class="pl-pds">'</span></span>,
+  )</pre></div>
+
+<p>To setup the package you have to add a <code>DJANGO_PUSH_NOTIFICATIONS</code> into your settings:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">def</span> <span class="pl-en">Settings</span>(<span class="pl-smi">Configuration</span>):
+  <span class="pl-c"># ...</span>
+  DJANGO_PUSH_NOTIFICATIONS <span class="pl-k">=</span> {
+      <span class="pl-s"><span class="pl-pds">'</span>SERVICE<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>push_notifications.services.zeropush.ZeroPushService<span class="pl-pds">'</span></span>,
+      <span class="pl-s"><span class="pl-pds">'</span>AUTH_TOKEN<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>123123123<span class="pl-pds">'</span></span>
+  }</pre></div>
+
+<p>The <code>SERVICE</code> Key can be set to the type of service you use. In this example we use the <code>ZeroPushService</code>. With the <code>ZeroPush</code> Service we are required to add a <code>AUTH_TOKEN</code> to the <code>Configuration</code>.</p>
+
+<p><strong>Note</strong>: Right now, only <code>ZeroPush</code> is available. More services will be available soon.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="register-a-device" class="anchor" href="#register-a-device" aria-hidden="true"><span class="octicon octicon-link"></span></a>Register a device</h3>
+
+<p>To register a new device you can use the <code>register_push_device</code> method in <code>utils</code>:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">from</span> push_notifications.utils <span class="pl-k">from</span> register_push_device
+
+token <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;The device token&gt;<span class="pl-pds">"</span></span>
+register_push_device(user, token)</pre></div>
+
+<p>You can also pass notification permissions directly to the <code>register_push_device</code> method:</p>
+
+<div class="highlight highlight-python"><pre>register_push_device(user, token, [<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>])</pre></div>
+
+<h3>
+<a id="add-permissions" class="anchor" href="#add-permissions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add permissions</h3>
+
+<p>To add an notification permission to a push device you can use the <code>add_permission</code> method on the <code>device</code> object:</p>
+
+<div class="highlight highlight-python"><pre>device.add_permission(<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>Or adding multiple permissions</p>
+
+<div class="highlight highlight-python"><pre>device.add_permissions([<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>])</pre></div>
+
+<p>Add all the permission for the devices that the user owns.</p>
+
+<div class="highlight highlight-python"><pre>user.push_devices.add_permissions([<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>])</pre></div>
+
+<h3>
+<a id="remove-permissions" class="anchor" href="#remove-permissions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remove permissions</h3>
+
+<p>To remove a notification permission you can use <code>remove_permission</code> method on the <code>device</code> object:</p>
+
+<div class="highlight highlight-python"><pre>device.remove_permissions(<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>Or removing multiple permissions</p>
+
+<div class="highlight highlight-python"><pre>device.remove_permissions([<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>])</pre></div>
+
+<p>Remove all the permission for the devices that the user owns.</p>
+
+<div class="highlight highlight-python"><pre>user.push_devices.remove_permissions([<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>])</pre></div>
+
+<h3>
+<a id="send-a-notification" class="anchor" href="#send-a-notification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a notification</h3>
+
+<p>To send a notification to a certain permission group you can call <code>send_push_notification</code> in <code>utils</code>:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">from</span> push_notifications <span class="pl-k">import</span> send_push_notification
+<span class="pl-k">from</span> datetime <span class="pl-k">import</span> timedelta
+
+send_push_notification(<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>This is the message<span class="pl-pds">'</span></span>, <span class="pl-smi">sound</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>annoyingSound.mp3<span class="pl-pds">"</span></span>,
+                                                       <span class="pl-smi">badge_number</span><span class="pl-k">=</span><span class="pl-c1">1</span>
+                                                       <span class="pl-smi">info</span><span class="pl-k">=</span>{
+                                                        <span class="pl-s"><span class="pl-pds">"</span>extra<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>payload<span class="pl-pds">"</span></span>,
+                                                        <span class="pl-s"><span class="pl-pds">"</span>in<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>notification<span class="pl-pds">"</span></span>
+                                                       },
+                                                       <span class="pl-smi">expiry</span><span class="pl-k">=</span>timedelta(<span class="pl-smi">days</span><span class="pl-k">=</span><span class="pl-c1">30</span>))</pre></div>
+
+<h4>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h4>
+
+<p><code>send_push_notification(notify_type, message, **kwargs)</code></p>
+
+<p><strong>kwargs</strong></p>
+
+<ul>
+<li>
+<code>sound</code>: The sound that has to be played when sending the notification</li>
+<li>
+<code>badge_number</code>: The badge_number that has to be displayed <strong>(iOS Only)</strong>
+</li>
+<li>
+<code>info</code>: Extra payload that comes along the notification</li>
+<li>
+<code>expiry</code>: The expiry of the notification <strong>Accepts timedelta and datetime object</strong>
+</li>
+</ul>
+
+<h3>
+<a id="send-a-notification-to-one-device" class="anchor" href="#send-a-notification-to-one-device" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a notification to one device</h3>
+
+<p>To send a notification to a specific device you can use the <code>send_push_notification</code> on the <code>device</code> object</p>
+
+<div class="highlight highlight-python"><pre>device.send_push_notification(<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>This is the message<span class="pl-pds">'</span></span>, <span class="pl-smi">sound</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>annoyingSound.mp3<span class="pl-pds">"</span></span>,
+                                                              <span class="pl-smi">badge_number</span><span class="pl-k">=</span><span class="pl-c1">1</span>
+                                                              <span class="pl-smi">info</span><span class="pl-k">=</span>{
+                                                                <span class="pl-s"><span class="pl-pds">"</span>extra<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>payload<span class="pl-pds">"</span></span>,
+                                                                <span class="pl-s"><span class="pl-pds">"</span>in<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>notification<span class="pl-pds">"</span></span>
+                                                              },
+                                                              <span class="pl-smi">expiry</span><span class="pl-k">=</span>timedelta(<span class="pl-smi">days</span><span class="pl-k">=</span><span class="pl-c1">30</span>))</pre></div>
+
+<p>It accepts the same parameters as the global <code>send_push_notification</code> in <code>utils</code>.</p>
+
+<h3>
+<a id="send-a-notification-to-one-user" class="anchor" href="#send-a-notification-to-one-user" aria-hidden="true"><span class="octicon octicon-link"></span></a>Send a notification to one user</h3>
+
+<p>To send a notification to a user and all its devices you can use the <code>send_push_notification</code> on the <code>push_devices</code> name in your user object:</p>
+
+<div class="highlight highlight-python"><pre>user.push_devices.send_push_notification(<span class="pl-s"><span class="pl-pds">'</span>likes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>This is the message<span class="pl-pds">'</span></span>,
+                                         <span class="pl-smi">sound</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>annoyingSound.mp3<span class="pl-pds">"</span></span>,
+                                         <span class="pl-smi">badge_number</span><span class="pl-k">=</span><span class="pl-c1">1</span>
+                                         <span class="pl-smi">info</span><span class="pl-k">=</span>{
+                                           <span class="pl-s"><span class="pl-pds">"</span>extra<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>payload<span class="pl-pds">"</span></span>,
+                                           <span class="pl-s"><span class="pl-pds">"</span>in<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>notification<span class="pl-pds">"</span></span>
+                                         },
+                                         <span class="pl-smi">expiry</span><span class="pl-k">=</span>timedelta(<span class="pl-smi">days</span><span class="pl-k">=</span><span class="pl-c1">30</span>))</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Fueled/django-push-notifications">Django-push-notifications</a> is maintained by <a href="https://github.com/Fueled">Fueled</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
