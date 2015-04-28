@@ -1,17 +1,54 @@
-# encoding: utf-8
-from setuptools import setup, find_packages
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+import push_notifications
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+version = push_notifications.__version__
+
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist upload')
+    print("You probably want to also tag the version now:")
+    print("  git tag -a %s -m 'version %s'" % (version, version))
+    print("  git push --tags")
+    sys.exit()
+
+readme = open('Readme.md').read()
 
 setup(
-    name='django-push-notifications',
-    version='0.1.0',
-    author=u'Paul Oostenrijk',
+    name='django-push-notifications-manager',
+    version=version,
+    description="""{{ cookiecutter.project_short_description }}""",
+    long_description=readme,
+    author='Paul Oostenrijk',
     author_email='paul@glemma.nl',
-    packages=find_packages(),
     url='https://github.com/Fueled/django-push-notifications',
-    description='Push notification wrapper for Django',
-    install_requires=[
-        'django>=1.3',
-        'requests',
+    packages=[
+        'push_notifications',
     ],
+    include_package_data=True,
+    install_requires=[
+    ],
+    license="BSD",
     zip_safe=False,
+    keywords='push, notifications, manager, apns',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+    ],
 )

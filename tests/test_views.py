@@ -16,7 +16,7 @@ class BaseTestCase(TestCase):
         self.factory = RequestFactory()
 
     def test_register_device(self):
-        push_device = PushDeviceFactory.build()
+        push_device = PushDeviceFactory.build(user=self.user)
         data = {
             'token': push_device.token
         }

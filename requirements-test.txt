@@ -1,18 +1,15 @@
--r common.txt
-
 # Testing
 # -------------------------------------
-flake8==2.3.0
-factory_boy==2.4.1
+flake8>=2.3.0
+factory_boy>=2.4.1
+nose>=1.3.0
+django-nose>=1.2
 
 # Configuration
 # -------------------------------------
-django-configurations==0.8
+django-configurations>=0.8
 
 # Mocking
 # -------------------------------------
 responses==0.3.0
-
-# Querysting parser
-# -------------------------------------
 querystring-parser==1.2.0
