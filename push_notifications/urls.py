@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 
 from django.conf.urls import patterns, url
 
-from .views import register_device, unregister_device
+from .views import RegisterDeviceView, UnRegisterDeviceView
 
 urlpatterns = patterns(
     '',
-    url(r'^register/$', register_device, name='push-notifications-register'),
-    url(r'^unregister/$', unregister_device, name='push-notifications-unregister')
+    url(r'^register/$', RegisterDeviceView.as_view(),
+        name='push-notifications-register'),
+    url(r'^unregister/$', UnRegisterDeviceView.as_view(),
+        name='push-notifications-unregister')
 )

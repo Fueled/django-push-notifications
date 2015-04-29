@@ -151,3 +151,18 @@ class PushDeviceTest(TestCase):
                 device__user=user).all():
             assert notification.send is False
             assert notification.name == SETTING_LIKE
+
+    def test_with_permission_filter(self):
+        """
+        Test if with_permission() filters as expected
+        """
+        user = TestUserFactory.create()
+        like_devices = PushDeviceFactory.create_batch(random.randint(1, 10),
+                                                      user=user)
+
+        PushDevice.objects.filter(user=user).add_permissions(SETTING_LIKE)
+
+        # Make objects without permission
+        PushDeviceFactory.create_batch(random.randint(1, 10), user=user)
+
+        assert user.push_devices.with_permission(SETTING_LIKE).count() == len(like_devices)

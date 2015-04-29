@@ -30,25 +30,25 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
-    name='django-push-notifications-manager',
+    name='dpnm',
     version=version,
     description="""A plug and play package to handle push devices and push notifications for services such as ZeroPush and Urban Airship""",
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author='Paul Oostenrijk',
     author_email='paul@glemma.nl',
-    url='https://github.com/glemmaPaul/django-push-notifications-manager',
+    url='https://github.com/Fueled/django-push-notifications',
     packages=get_packages('push_notifications'),
     include_package_data=True,
     install_requires=[
         'django>=1.5.1',
-        'requests>=2.5.1'
+        'requests>=2.5.1',
+        'djangorestframework>=3.1.1'
     ],
     license="BSD",
     zip_safe=False,
-    keywords='django-push-notifications-manager',
+    keywords='pnm, django, push, notifications, manager',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django',
