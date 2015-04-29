@@ -13,3 +13,7 @@ django-configurations>=0.8
 # -------------------------------------
 responses==0.3.0
 querystring-parser==1.2.0
+
+# Rest framework
+# -------------------------------------
+djangorestframework>=3.1.1

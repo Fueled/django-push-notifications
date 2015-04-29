@@ -19,30 +19,30 @@ class ZeroPushService(BaseService):
     def send_push_notification(self, devices, message,
                                badge_number=None, sound=None,
                                payload=None, expiry=None):
-        params = {
-            "auth_token": self.auth_token,
-            "device_tokens[]": [device.token for device in devices],
-            "expiry": expiry,
-            "sound": sound,
-            "info": payload
-        }
+        if len(devices):
+            params = {
+                "auth_token": self.auth_token,
+                "device_tokens[]": [device.token for device in devices],
+                "expiry": expiry,
+                "sound": sound,
+                "info": payload
+            }
 
-        for key in params.keys():
-            if not params[key]:
-                del params[key]
+            for key in params.keys():
+                if not params[key]:
+                    del params[key]
 
-        expiry_time = timedelta(days=30).seconds
+            expiry_time = timedelta(days=30).seconds
 
-        if isinstance(expiry, datetime):
-            expiry_time = expiry.second
-        elif isinstance(expiry, timedelta):
-            expiry_time = expiry.seconds
+            if isinstance(expiry, datetime):
+                expiry_time = expiry.second
+            elif isinstance(expiry, timedelta):
+                expiry_time = expiry.seconds
 
-        params['expiry'] = expiry_time
+            params['expiry'] = expiry_time
 
-        response = requests.post(ZEROPUSH_REQUEST_URL, params)
+            response = requests.post(ZEROPUSH_REQUEST_URL, params)
 
-        if response.ok:
-            return True
-
+            if response.ok:
+                return True
         return False

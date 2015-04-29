@@ -2,31 +2,30 @@
 from uuid import uuid4
 
 # Third party stuff
-from django.test import TestCase, RequestFactory
+from rest_framework.test import APITestCase
+from rest_framework.test import force_authenticate
+from django.test.client import RequestFactory
 
 # Local
 from .factories import TestUserFactory, PushDeviceFactory
-from push_notifications.views import register_device, unregister_device
+from push_notifications.views import RegisterDeviceView, UnRegisterDeviceView
 
 
-class BaseTestCase(TestCase):
+class BaseTestCase(APITestCase):
     def setUp(self):
         self.user = TestUserFactory.create()
-        # Every test needs access to the request factory.
         self.factory = RequestFactory()
+        self.register_view = RegisterDeviceView.as_view()
+        self.unregister_view = UnRegisterDeviceView.as_view()
 
     def test_register_device(self):
         push_device = PushDeviceFactory.build(user=self.user)
         data = {
             'token': push_device.token
         }
-        self.assertEqual(
-            self.user.push_devices.filter(token=data['token']).count(), 0)
-
-        request = self.factory.post('/register', data)
-        request.user = self.user
-
-        response = register_device(request)
+        request = self.factory.post('/accounts/django-superstars/', data)
+        force_authenticate(request, user=self.user)
+        response = self.register_view(request)
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(
@@ -41,9 +40,9 @@ class BaseTestCase(TestCase):
             len(self.user.push_devices.filter(token=data['token'])), 1)
 
         request = self.factory.post('/unregister', data)
-        request.user = self.user
+        force_authenticate(request, user=self.user)
 
-        response = unregister_device(request)
+        response = self.unregister_view(request)
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(
@@ -56,7 +55,7 @@ class BaseTestCase(TestCase):
         }
         request = self.factory.post('/register', data)
 
-        response = register_device(request)
+        response = self.register_view(request)
         self.assertEqual(response.status_code, 403)
 
     def test_unregister_device_unauthorized(self):
@@ -66,7 +65,7 @@ class BaseTestCase(TestCase):
         }
         request = self.factory.post('/unregister', data)
 
-        response = register_device(request)
+        response = self.register_view(request)
         self.assertEqual(response.status_code, 403)
 
     def test_validation_errors_register_device(self):
@@ -76,7 +75,7 @@ class BaseTestCase(TestCase):
             'token': 'iswaytooshort'
         }
         request = self.factory.post('/unregister', data)
-        request.user = self.user
+        force_authenticate(request, user=self.user)
 
-        response = register_device(request)
+        response = self.register_view(request)
         self.assertEqual(response.status_code, 400)
