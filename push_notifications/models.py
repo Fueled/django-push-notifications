@@ -22,6 +22,12 @@ class PushDeviceMethods(object):
         return self.model.send_push_notification(self.all(),
                                                  message, **kwargs)
 
+    def with_permission(self, permission):
+        return self.filter(notification_settings__name=permission)
+
+    def with_permissions(self, permissions):
+        return self.filter(notification_settings__name__in=permissions)
+
     def unregister_push_device(self, user, token):
         return self.model.unregister_push_device(user, token)
 

@@ -15,7 +15,7 @@ To install the package on your machine you can run the PIP install:
 
 ::
 
-    pip install django-push-notifications-manager
+    pip install django-pnm
 
 Configuration
 -------------
@@ -45,8 +45,27 @@ The ``SERVICE`` Key can be set to the type of service you use. In this
 example we use the ``ZeroPushService``. With the ``ZeroPush`` Service we
 are required to add a ``AUTH_TOKEN`` to the ``Configuration``.
 
+
+Don't forget to run the migrations
+~~~~~~~~~~~~~~~
+Then run the migrations by running: ``python manage.py migrate``
+
+
 **Note**: Right now, only ``ZeroPush`` is available. More services will
 be available soon.
+
+For Django REST Framework users
+-------------
+
+There are also 2 endpoints for you available. These can be used to register and unregister a push device. The endpoints are Auth protected with the default settings of your Django REST Framework set up.
+
+To enable the ``unregister`` and ``register`` endpoints you can add the following to your ``urls.py`` file:
+
+.. code:: python
+    url(r'^notifications/', include('push_notifications.urls')),
+
+
+**Note**: We purposely have chosen to not include ``djangorestframework`` as a dependecy. If you don't have it you would have to include it in your ``requirements.txt`` file.
 
 Usage
 -----
