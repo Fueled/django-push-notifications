@@ -1,6 +1,8 @@
+import json
+from datetime import timedelta, datetime
+
 from django.core.exceptions import ImproperlyConfigured
 import requests
-from datetime import timedelta, datetime
 
 from .base import BaseService
 
@@ -16,30 +18,39 @@ class ZeroPushService(BaseService):
             raise ImproperlyConfigured('For ZeroPush to work you need an '
                                        'AUTH_TOKEN in the configuration')
 
+    @staticmethod
+    def process_expiry(expiry):
+        if isinstance(expiry, datetime):
+            expiry = expiry.second
+
+        if isinstance(expiry, timedelta):
+            expiry = expiry.seconds
+        return expiry
+
     def send_push_notification(self, devices, message,
                                badge_number=None, sound=None,
                                payload=None, expiry=None):
         if len(devices):
             params = {
                 "auth_token": self.auth_token,
-                "device_tokens[]": [device.token for device in devices],
-                "expiry": expiry,
-                "sound": sound,
-                "info": payload
+                "device_tokens[]": [device.token for device in devices]
             }
 
-            for key in params.keys():
-                if not params[key]:
-                    del params[key]
+            if message is not None:
+                params.update({"alert": message})
 
-            expiry_time = timedelta(days=30).seconds
+            if sound is not None:
+                params.update({"sound": sound})
 
-            if isinstance(expiry, datetime):
-                expiry_time = expiry.second
-            elif isinstance(expiry, timedelta):
-                expiry_time = expiry.seconds
+            if badge_number is not None:
+                params.update({"badge": badge_number})
 
-            params['expiry'] = expiry_time
+            if payload is not None:
+                params.update({"info": json.dumps(payload)})
+
+            if expiry is not None:
+                expiry = self.process_expiry(expiry)
+                params.update({'expiry': expiry})
 
             response = requests.post(ZEROPUSH_REQUEST_URL, params)
 
