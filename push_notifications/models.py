@@ -114,7 +114,7 @@ class NotificationSetting(models.Model):
         unique_together = ('device', 'name')
 
     def __unicode__(self):
-        return "{0} - {1}".format(self.device, self.type)
+        return "{0} - {1}".format(self.device, self.name)
 
     @classmethod
     def can_send(cls, device, notice_type):
