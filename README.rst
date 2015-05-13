@@ -1,5 +1,7 @@
 Django Push Notifications
 =========================
+.. image:: https://travis-ci.org/Fueled/django-push-notifications.svg
+    :target: https://travis-ci.org/Fueled/django-push-notifications
 
 This package makes it easy to support Push notifications. It works
 together with third party services such as ``ZeroPush``.
