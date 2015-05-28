@@ -55,6 +55,9 @@ class PushDevice(models.Model):
 
     objects = PushDeviceManager()
 
+    class Meta:
+        unique_together = ('user', 'token')
+
     def add_permissions(self, notice_types):
         """ Adds a permission to the push device """
         PushDevice.change_permissions(notice_types, self, send=True)
