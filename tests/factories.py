@@ -3,6 +3,8 @@
 # Standard Library
 import threading
 import random
+import json
+import urlparse
 
 # Third Party Stuff
 import factory
@@ -51,3 +53,29 @@ class NotificationSettingFactory(Factory):
     name = factory.Sequence(lambda n: "Name {0}".format(n + 1))
     device = factory.SubFactory('tests.factories.PushDeviceFactory')
     send = random.choice([True, False])
+
+
+# Make a mock of the response
+def request_notify_callback(request):
+    payload = dict(urlparse.parse_qsl(request.body))
+    response_body = {
+        "sent_count": len(payload['device_tokens[]']),
+        "inactive_tokens": [],
+        "unregistered_tokens": []
+    }
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    return (200, headers, json.dumps(response_body))
+
+
+# Make a mock of the response of registering a device
+def request_register_callback(request):
+    response_body = {
+        "message": "ok"
+    }
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    return (200, headers, json.dumps(response_body))

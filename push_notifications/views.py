@@ -32,8 +32,10 @@ class RegisterDeviceView(APIView):
         serializer = DeviceTokenSerializer(data=request.data)
         # check whether it's valid:
         if serializer.is_valid():
-            PushDevice.register_push_device(
+            device = PushDevice.register_push_device(
                 request.user, serializer.validated_data['token'])
-            return Response({'registered': True})
+            registered = (True if device is not None else False)
+            status_code = (200 if registered is True else 400)
+            return Response({'registered': registered}, status=status_code)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

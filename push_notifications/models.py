@@ -65,8 +65,13 @@ class PushDevice(models.Model):
 
     @classmethod
     def register_push_device(cls, user, token, notice_types=None):
-        device, _ = cls.objects.get_or_create(token=token,
-                                              user=user)
+        registered = get_service().register_push_device(token)
+
+        if not registered:
+            return None
+
+        device, created = cls.objects.get_or_create(user=user, token=token)
+
         if notice_types:
             cls.change_permissions(notice_types, device)
         return device

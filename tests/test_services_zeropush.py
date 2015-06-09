@@ -3,6 +3,7 @@ Tests for the ZeroPushService
 """
 import responses
 import json
+from uuid import uuid4
 from datetime import timedelta, datetime
 
 
@@ -10,9 +11,11 @@ from django.test import TestCase
 from querystring_parser import parser as querystring_parser
 
 # Local stuff
-from .factories import PushDeviceFactory
-from push_notifications.services.zeropush import ZeroPushService
-from push_notifications.services.zeropush import ZEROPUSH_REQUEST_URL
+from .factories import (PushDeviceFactory, request_register_callback,
+                        TestUserFactory)
+from push_notifications.services.zeropush import (ZeroPushService,
+                                                  ZEROPUSH_NOTIFY_URL,
+                                                  ZEROPUSH_REGISTER_URL)
 from django.core.exceptions import ImproperlyConfigured
 from .support.validation import validate_zeropush_payload
 
@@ -57,7 +60,7 @@ class ZeroPushServiceTest(TestCase):
                 return (400, {}, {})
 
         responses.add_callback(
-            responses.POST, ZEROPUSH_REQUEST_URL,
+            responses.POST, ZEROPUSH_NOTIFY_URL,
             callback=request_callback,
             content_type='application/json',
         )
@@ -101,7 +104,7 @@ class ZeroPushServiceTest(TestCase):
                 return (400, {}, {})
 
         responses.add_callback(
-            responses.POST, ZEROPUSH_REQUEST_URL,
+            responses.POST, ZEROPUSH_NOTIFY_URL,
             callback=request_callback,
             content_type='application/json',
         )
@@ -119,3 +122,41 @@ class ZeroPushServiceTest(TestCase):
                                                },
                                                expiry=datetime.now())
         assert send is True
+
+    @responses.activate
+    def test_zeropush_register_valid(self):
+        """
+        Test if we get back True when the resposne of registering is ok
+        """
+        responses.add_callback(
+            responses.POST, ZEROPUSH_REGISTER_URL,
+            callback=request_register_callback,
+            content_type='application/json',
+        )
+
+        zeropush = ZeroPushService({
+            'AUTH_TOKEN': '123123'
+        })
+
+        token = uuid4()
+
+        registered = zeropush.register_push_device(token)
+        assert registered is True
+
+    @responses.activate
+    def test_zeropush_register_invalid(self):
+        """
+        Test if we get back False when the response of registering is not ok.
+        """
+        responses.add(responses.POST, ZEROPUSH_REGISTER_URL,
+                      body='{"error": "invalid token"}', status=400,
+                      content_type='application/json')
+
+        zeropush = ZeroPushService({
+            'AUTH_TOKEN': '123123'
+        })
+
+        token = uuid4()
+
+        registered = zeropush.register_push_device(token)
+        assert registered is False
