@@ -3,7 +3,8 @@ from django.utils.module_loading import import_string
 from django.core.exceptions import ImproperlyConfigured
 
 # Local stuff
-from .base import InvalidPushNotificationError
+from .exceptions import InvalidPushNotificationError
+
 
 SERVICE_NAME_KEY = 'SERVICE'
 

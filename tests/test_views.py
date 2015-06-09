@@ -5,10 +5,13 @@ from uuid import uuid4
 from rest_framework.test import APITestCase
 from rest_framework.test import force_authenticate
 from django.test.client import RequestFactory
+import responses
 
 # Local
-from .factories import TestUserFactory, PushDeviceFactory
+from .factories import (TestUserFactory, PushDeviceFactory,
+                        request_register_callback)
 from push_notifications.views import RegisterDeviceView, UnRegisterDeviceView
+from push_notifications.services.zeropush import ZEROPUSH_REGISTER_URL
 
 
 class BaseTestCase(APITestCase):
@@ -18,12 +21,19 @@ class BaseTestCase(APITestCase):
         self.register_view = RegisterDeviceView.as_view()
         self.unregister_view = UnRegisterDeviceView.as_view()
 
+    @responses.activate
     def test_register_device(self):
+        responses.add_callback(
+            responses.POST, ZEROPUSH_REGISTER_URL,
+            callback=request_register_callback,
+            content_type='application/json',
+        )
+
         push_device = PushDeviceFactory.build(user=self.user)
         data = {
             'token': push_device.token
         }
-        request = self.factory.post('/accounts/django-superstars/', data)
+        request = self.factory.post('/register/', data)
         force_authenticate(request, user=self.user)
         response = self.register_view(request)
         self.assertEqual(response.status_code, 200)
