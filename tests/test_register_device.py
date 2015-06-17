@@ -87,6 +87,30 @@ class RegisterDeviceTests(TestCase):
         assert device.user.pk == user.pk
 
     @responses.activate
+    def test_register_device_token_duplicate_removed(self):
+        """
+        Test if other push devices with the same token are getting
+        deleted.
+        """
+        responses.add_callback(
+            responses.POST, ZEROPUSH_REGISTER_URL,
+            callback=request_register_callback,
+            content_type='application/json',
+        )
+
+        user = self._create_user()
+        token = self._create_token()
+        PushDevice.objects.register_push_device(
+            user, token, notify_types='likes')
+
+        # Create other user
+        other_user = self._create_user()
+        PushDevice.objects.register_push_device(
+            other_user, token)
+
+        assert PushDevice.objects.filter(token=token).count() == 1
+
+    @responses.activate
     def test_register_device_service_notify_types(self):
         """
         Tests if register_push_device in services workw with extra

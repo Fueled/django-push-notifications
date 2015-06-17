@@ -73,6 +73,9 @@ class PushDevice(models.Model):
         if not registered:
             return None
 
+        # Delete any devices with the same token.
+        cls.objects.filter(token=token).delete()
+
         device, created = cls.objects.get_or_create(user=user, token=token)
 
         if notice_types:
