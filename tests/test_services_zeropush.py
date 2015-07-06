@@ -11,8 +11,7 @@ from django.test import TestCase
 from querystring_parser import parser as querystring_parser
 
 # Local stuff
-from .factories import (PushDeviceFactory, request_register_callback,
-                        TestUserFactory)
+from .factories import PushDeviceFactory, request_register_callback
 from push_notifications.services.zeropush import (ZeroPushService,
                                                   ZEROPUSH_NOTIFY_URL,
                                                   ZEROPUSH_REGISTER_URL)
@@ -76,7 +75,9 @@ class ZeroPushServiceTest(TestCase):
                                                    "extra": "payload",
                                                    "in": "notification"
                                                },
-                                               expiry=timedelta(days=30))
+                                               expiry=timedelta(days=30),
+                                               category="test"
+                                               )
 
         assert send is True
 
@@ -120,7 +121,9 @@ class ZeroPushServiceTest(TestCase):
                                                    "extra": "payload",
                                                    "in": "notification"
                                                },
-                                               expiry=datetime.now())
+                                               expiry=datetime.now(),
+                                               category="test"
+                                               )
         assert send is True
 
     @responses.activate
