@@ -202,3 +202,15 @@ object:
                                                "in": "notification"
                                              },
                                              expiry=timedelta(days=30))
+
+
+Optional user send push admin
+--------------------
+
+There is an option to add an extra action to your user admin model. This enables the Admin user to manually send a push notification to certain users. To enable this form you have to inherit ``push_notifications.admin.SendPushAdmin``:
+.. code:: python
+    from push_notifications.admin import SendPushAdmin
+
+    class UserAdmin(SendPushAdmin, models.ModelAdmin):
+        # Your logic here..
+
