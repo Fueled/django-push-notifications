@@ -43,7 +43,8 @@ setup(
     include_package_data=True,
     install_requires=[
         'django>=1.5.1',
-        'requests>=2.5.1'
+        'requests>=2.5.1',
+        'apns>=2.0.1',
     ],
     license="BSD",
     zip_safe=False,

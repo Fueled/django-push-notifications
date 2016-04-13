@@ -71,7 +71,7 @@ class ZeroPushServiceTest(TestCase):
         send = zeropush.send_push_notification(devices, 'This is the message',
                                                sound="annoyingSound.mp3",
                                                badge_number=1,
-                                               payload={
+                                               custom={
                                                    "extra": "payload",
                                                    "in": "notification"
                                                },
@@ -117,7 +117,7 @@ class ZeroPushServiceTest(TestCase):
         send = zeropush.send_push_notification(devices, 'This is the message',
                                                sound="annoyingSound.mp3",
                                                badge_number=1,
-                                               payload={
+                                               custom={
                                                    "extra": "payload",
                                                    "in": "notification"
                                                },

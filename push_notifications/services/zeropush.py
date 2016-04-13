@@ -40,7 +40,7 @@ class ZeroPushService(BaseService):
 
     def send_push_notification(self, devices, message,
                                badge_number=None, sound=None,
-                               payload=None, expiry=None,
+                               custom=None, expiry=None,
                                category=None):
         """
         Sends a push notification request to ZeroPush.
@@ -60,8 +60,8 @@ class ZeroPushService(BaseService):
             if badge_number is not None:
                 params.update({"badge": badge_number})
 
-            if payload is not None:
-                params.update({"info": json.dumps(payload)})
+            if custom is not None:
+                params.update({"info": json.dumps(custom)})
 
             if expiry is not None:
                 expiry = self.process_expiry(expiry)

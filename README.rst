@@ -36,8 +36,6 @@ into your settings:
 
 .. code:: python
 
-    def Settings(Configuration):
-      # ...
       DJANGO_PUSH_NOTIFICATIONS = {
           'SERVICE': 'push_notifications.services.zeropush.ZeroPushService',
           'AUTH_TOKEN': '123123123'
@@ -71,6 +69,36 @@ To enable the ``unregister`` and ``register`` endpoints you can add the followin
 
 Usage
 -----
+
+Supported Services
+~~~~~~~~~~~~~~~~~~
+
+Following services are provided with configuration required for them:
+
+1. Apple Push Notification Service(APNs):
+
+.. code:: python
+
+    DJANGO_PUSH_NOTIFICATIONS = {
+        'SERVICE': 'push_notifications.services.apns.APNSPushService',
+        'APNS_CONF': {
+            'APNS_USE_SANDBOX': False,  # Determines whether to use Apple Production Gateway or Sandbox servers
+            'APNS_CERT_SANDBOX': None,  # Full path to Sandbox APNS certificate file. Certificates should be without passphrase.
+            'APNS_CERT_PRODUCTION': None,  # Full path to Production APNS certificate file.
+        }
+    }
+
+2. ZeroPush Notification Service:
+
+.. code:: python
+
+      DJANGO_PUSH_NOTIFICATIONS = {
+          'SERVICE': 'push_notifications.services.zeropush.ZeroPushService',
+          'AUTH_TOKEN': '123123123'
+      }
+
+**Note**: ZeroPush ´has been `discontinued`_.
+
 
 Register a device
 ~~~~~~~~~~~~~~~~~
@@ -214,3 +242,4 @@ There is an option to add an extra action to your user admin model. This enables
     class UserAdmin(SendPushAdmin, models.ModelAdmin):
         # Your logic here..
 
+.. _discontinued: https://zeropush.com/

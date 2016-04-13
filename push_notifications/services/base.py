@@ -9,7 +9,7 @@ class BaseService(object):
 
     def send_push_notification(self, devices, message,
                                badge_number=None, sound=None,
-                               payload=None, expiry=None):
+                               custom=None, expiry=None):
         pass
 
     def register_push_device(self, token):
